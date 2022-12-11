@@ -2,6 +2,11 @@ spring:
   application:
     name: discovery-service
 
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false  
+
 
 server:
   port: 8761
