@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: gateway
+
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        - id: inventory-management-route
+          uri: lb://inventory-management
+          predicates:
+            - Path=/inventory-management/**
+          filters:
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY
+                methods: GET,POST
+                backoff:
+                  firstBackoff: 10ms
+                  maxBackoff: 50ms
+                  factor: 2
+                  basedOnPreviousValue: false
+        - id: finance-route
+          uri: lb://finance
+          predicates:
+            - Path=/finance/**
+        - id: procurement-route
+          uri: lb://procurement
+          predicates:
+            - Path=/procurement/**
+
+
+server:
+  port: 8080
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
