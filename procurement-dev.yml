@@ -36,6 +36,19 @@ spring:
     serialization:
       fail-on-empty-beans: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    circuitbreakers:
+      enabled: true
+    health:
+      show-details: ALWAYS
+  health:
+    circuitbreakers:
+      enabled: true
 
 eureka:
   instance:
