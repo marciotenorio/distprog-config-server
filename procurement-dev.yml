@@ -44,6 +44,7 @@ management:
     circuitbreakers:
       enabled: true
     health:
+      enabled: true
       show-details: ALWAYS
   health:
     circuitbreakers:
@@ -58,6 +59,64 @@ eureka:
     fetch-registry: true
     service-url:
       default-zone: http://localhost:8761/eureka/
+
+
+resilience4j.circuitbreaker:
+    instances:
+        inventory-management-products:
+            registerHealthIndicator: true
+            ringBufferSizeInClosedState: 5
+            ringBufferSizeInHalfOpenState: 3
+            waitDurationInOpenState: 10s
+            failureRateThreashold: 5
+            recordExceptions:
+                - org.springframework.web.client.HttpServerErrorException
+                - java.io.IOException
+                - java.lang.IllegalStateException
+                - java.util.concurrent.TimeoutException
+                - org.springframework.web.client.ResourceAccessException
+                - java.lang.RuntimeException
+              
+        inventory-management-vendors:
+          registerHealthIndicator: true
+          ringBufferSizeInClosedState: 5
+          ringBufferSizeInHalfOpenState: 3
+          waitDurationInOpenState: 10s
+          failureRateThreashold: 5
+          recordExceptions:
+              - org.springframework.web.client.HttpServerErrorException
+              - java.io.IOException
+              - java.lang.IllegalStateException
+              - java.util.concurrent.TimeoutException
+              - org.springframework.web.client.ResourceAccessException
+              - java.lang.RuntimeException
+
+
+resilience4j.bulkhead:
+    instances:
+        inventory-management-vendors-bh:
+            maxWaitDuration: 500ms
+            maxConcurrentCalls: 20
+
+
+# resilience4j.thread-pool-bulkhead:
+#     instances:
+#         inventory-management-vendors-bh:
+#             maxThreadPoolSize: 1
+#             coreThreadPoolSize: 1
+#             queueCapacity: 1
+
+
+resilience4j.retry:
+    instances:
+        retryInventoryManagementProductsFindById:
+            maxRetryAttempts: 5
+            waitDuration: 100
+            retry-exceptions:
+              - java.util.concurrent.TimeoutException
+              - java.net.ConnectException
+
+
 
 #Setando com padr�o do logback do spring
 logging:

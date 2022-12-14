@@ -27,14 +27,43 @@ spring:
                   maxBackoff: 50ms
                   factor: 2
                   basedOnPreviousValue: false
+              - name: CircuitBreaker
+                args: 
+                  name: inventory-management-circuitbreaker
+                  slidingWindowSize: 20
+                  permittedNumberOfCallsInHalfOpenState: 5
+                  failureRateThreshold: 50
+                  waitDurationInOpenState: 15000
         - id: finance-route
           uri: lb://finance
           predicates:
             - Path=/finance/**
+          filters:
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY
+                methods: GET,POST
+                backoff:
+                  firstBackoff: 10ms
+                  maxBackoff: 50ms
+                  factor: 2
+                  basedOnPreviousValue: false
         - id: procurement-route
           uri: lb://procurement
           predicates:
             - Path=/procurement/**
+          filters:
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY
+                methods: GET,POST
+                backoff:
+                  firstBackoff: 10ms
+                  maxBackoff: 50ms
+                  factor: 2
+                  basedOnPreviousValue: false
 
 
 eureka:
@@ -51,7 +80,14 @@ management:
   endpoint:
     gateway:
       enabled: true
+    circuitbreakers:
+      enabled: true
+    health:
+      show-details: ALWAYS
   endpoints:
     web:
       exposure:
         include: "*"
+  health:
+    circuitbreakers:
+      enabled: true
