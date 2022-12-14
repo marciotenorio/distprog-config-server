@@ -27,13 +27,6 @@ spring:
                   maxBackoff: 50ms
                   factor: 2
                   basedOnPreviousValue: false
-              - name: CircuitBreaker
-                args: 
-                  name: inventory-management-circuitbreaker
-                  slidingWindowSize: 20
-                  permittedNumberOfCallsInHalfOpenState: 5
-                  failureRateThreshold: 50
-                  waitDurationInOpenState: 15000
         - id: finance-route
           uri: lb://finance
           predicates:
