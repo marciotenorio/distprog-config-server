@@ -6,7 +6,7 @@ Prof. Dr. Nélio Alessandro Azevedo Cacho.
 
 ### Descrição 
 
-Repositório usado como fonte pelo servidor de configuração para obtenção dos arquivos de configuração (application.yml) dos projetos.
+Repositório usado como fonte pelo config server para obtenção dos arquivos de configuração (application.yml) dos projetos.
 
 ### Microserviços 
 - Cloud function
@@ -15,3 +15,4 @@ Repositório usado como fonte pelo servidor de configuração para obtenção do
 - Gateway
 - Inventory Management
 - Procurement
+- Config Server
